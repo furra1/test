@@ -3,6 +3,11 @@ from app.handlers.check_handler import create_check, get_check_result
 
 checks_routes = web.RouteTableDef()
 
+@checks_routes.options('/api/check')
+async def options_check_handler(request):
+    """Обработка preflight запросов для CORS"""
+    return web.Response()
+
 @checks_routes.post('/api/check')
 async def create_check_handler(request):
     """Создать новую проверку"""
@@ -14,6 +19,11 @@ async def create_check_handler(request):
         return web.json_response({"error": str(e)}, status=400)
     except Exception as e:
         return web.json_response({"error": f"Internal error: {str(e)}"}, status=500)
+
+@checks_routes.options('/api/check/{check_id}')
+async def options_get_check_handler(request):
+    """Обработка preflight запросов для CORS"""
+    return web.Response()
 
 @checks_routes.get('/api/check/{check_id}')
 async def get_check_handler(request):

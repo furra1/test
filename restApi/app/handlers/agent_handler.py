@@ -49,3 +49,40 @@ async def create_agent(data, app):
     
     agent_id = db.create_agent(name, location, ip, token)
     return {"agent_id": agent_id, "status": "created"}
+
+async def get_agent_tasks(app):
+    """Получить задачи для агентов"""
+    # Получаем задачи из сервиса проверок
+    from app.services.checks_service import CheckService
+    
+    # Создаем временный сервис для получения задач
+    service = CheckService()
+    checks = service.get_all_checks()
+    
+    # Фильтруем задачи, которые еще не выполнены
+    pending_tasks = []
+    for check in checks:
+        if check.get('status') == 'queued':
+            for check_type in check.get('checks', []):
+                pending_tasks.append({
+                    'id': f"{check['id']}_{check_type}",
+                    'check_id': check['id'],
+                    'type': check_type,
+                    'target': check['target']
+                })
+    
+    return {"tasks": pending_tasks}
+
+async def send_agent_results(data, app):
+    """Обработать результаты от агента"""
+    task_id = data.get('task_id')
+    agent_id = data.get('agent_id')
+    results = data.get('results')
+    
+    if not all([task_id, agent_id, results]):
+        raise ValueError("Не указаны все обязательные поля")
+    
+    # Здесь можно добавить логику обработки результатов
+    # Например, обновление статуса задачи в базе данных
+    
+    return {"status": "received", "task_id": task_id}

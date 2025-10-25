@@ -18,29 +18,29 @@ ALLOWED_ORIGINS = [
 async def cors_middleware(request, handler):
     origin = request.headers.get('Origin', '')
     
-    # Проверяем origin
-    if origin in ALLOWED_ORIGINS or not origin:
-        response = await handler(request)
-        
-        # Добавляем только разрешенные заголовки
-        if origin:
-            response.headers['Access-Control-Allow-Origin'] = origin
-            response.headers['Access-Control-Allow-Credentials'] = 'true'
-        
-        # Разрешенные методы и заголовки
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST,  DELETE, OPTIONS'
+    # Обработка preflight запросов
+    if request.method == 'OPTIONS':
+        response = web.Response()
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
         response.headers['Access-Control-Max-Age'] = '3600'
-        
-        # Безопасные заголовки
-        response.headers['X-Content-Type-Options'] = 'nosniff'
-        response.headers['X-Frame-Options'] = 'DENY'
-        response.headers['X-XSS-Protection'] = '1; mode=block'
-        
         return response
-    else:
-        # Запрещаем неразрешенные origin
-        raise web.HTTPForbidden(reason="Origin not allowed")
+    
+    # Обрабатываем обычные запросы
+    response = await handler(request)
+    
+    # Добавляем CORS заголовки
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+    
+    # Безопасные заголовки
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    
+    return response
 
 # Middleware для валидации JSON
 @web.middleware
