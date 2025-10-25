@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,37 +11,37 @@
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Arial', sans-serif;
             color: #fff;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
-
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-
+        
         .header {
             text-align: center;
             margin-bottom: 30px;
         }
-
+        
         .page-title {
             font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
-
+        
         .nav {
             margin-bottom: 30px;
             text-align: center;
         }
-
+        
         .nav a {
             color: #fff;
             text-decoration: none;
@@ -50,11 +51,11 @@
             background: rgba(255, 255, 255, 0.1);
             transition: background-color 0.3s;
         }
-
+        
         .nav a:hover {
             background: rgba(255, 255, 255, 0.2);
         }
-
+        
         .controls {
             display: flex;
             justify-content: space-between;
@@ -63,13 +64,13 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-
+        
         .filter-group {
             display: flex;
             gap: 10px;
             align-items: center;
         }
-
+        
         .filter-select {
             padding: 8px 12px;
             border: none;
@@ -77,8 +78,9 @@
             background: rgba(255, 255, 255, 0.9);
             color: #333;
         }
-
-        .clear-btn, .refresh-btn {
+        
+        .clear-btn,
+        .refresh-btn {
             background: linear-gradient(45deg, #ff6b6b, #ee5a24);
             color: white;
             border: none;
@@ -87,22 +89,23 @@
             cursor: pointer;
             transition: transform 0.3s;
         }
-
+        
         .refresh-btn {
             background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
-
-        .clear-btn:hover, .refresh-btn:hover {
+        
+        .clear-btn:hover,
+        .refresh-btn:hover {
             transform: translateY(-2px);
         }
-
+        
         .history-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin-bottom: 30px;
         }
-
+        
         .stat-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -111,19 +114,19 @@
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
+        
         .stat-number {
             font-size: 2rem;
             font-weight: bold;
             color: #4ecdc4;
             margin-bottom: 5px;
         }
-
+        
         .stat-label {
             font-size: 0.9rem;
             opacity: 0.8;
         }
-
+        
         .history-list {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -131,7 +134,7 @@
             padding: 25px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
+        
         .history-item {
             background: rgba(0, 0, 0, 0.3);
             padding: 20px;
@@ -141,60 +144,60 @@
             transition: all 0.3s;
             border-left: 4px solid transparent;
         }
-
+        
         .history-item:hover {
             background: rgba(0, 0, 0, 0.5);
             transform: translateX(5px);
         }
-
+        
         .history-item.completed {
             border-left-color: #4ecdc4;
         }
-
+        
         .history-item.error {
             border-left-color: #ff6b6b;
         }
-
+        
         .history-item.pending {
             border-left-color: #feca57;
         }
-
+        
         .history-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-
+        
         .target-name {
             font-size: 1.2rem;
             font-weight: bold;
             color: #4ecdc4;
         }
-
+        
         .check-types {
             background: rgba(255, 255, 255, 0.2);
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.8rem;
         }
-
+        
         .history-details {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 10px;
             margin-bottom: 10px;
         }
-
+        
         .detail-item {
             font-size: 0.9rem;
         }
-
+        
         .detail-label {
             color: #4ecdc4;
             font-weight: bold;
         }
-
+        
         .status-badge {
             display: inline-block;
             padding: 4px 8px;
@@ -202,60 +205,58 @@
             font-size: 0.8rem;
             font-weight: bold;
         }
-
+        
         .status-completed {
             background: rgba(78, 205, 196, 0.3);
             color: #4ecdc4;
         }
-
+        
         .status-error {
             background: rgba(255, 107, 107, 0.3);
             color: #ff6b6b;
         }
-
+        
         .status-pending {
             background: rgba(254, 202, 87, 0.3);
             color: #feca57;
         }
-
+        
         .loading {
             text-align: center;
             padding: 40px;
             color: #4ecdc4;
             font-size: 1.1rem;
         }
-
+        
         .empty-state {
             text-align: center;
             padding: 60px 20px;
             color: rgba(255, 255, 255, 0.7);
         }
-
+        
         .empty-state h3 {
             margin-bottom: 10px;
             color: #4ecdc4;
         }
-
+        
         @media (max-width: 768px) {
             .page-title {
                 font-size: 2rem;
             }
-            
             .controls {
                 flex-direction: column;
                 align-items: stretch;
             }
-            
             .filter-group {
                 justify-content: center;
             }
-            
             .history-details {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header class="header">
@@ -278,7 +279,7 @@
                     <option value="pending">В процессе</option>
                     <option value="error">Ошибка</option>
                 </select>
-                
+
                 <label for="typeFilter">Тип:</label>
                 <select id="typeFilter" class="filter-select" onchange="filterHistory()">
                     <option value="all">Все типы</option>
@@ -290,7 +291,7 @@
                     <option value="traceroute">Traceroute</option>
                 </select>
             </div>
-            
+
             <div>
                 <button class="refresh-btn" onclick="loadHistory()">Обновить</button>
                 <button class="clear-btn" onclick="clearHistory()">Очистить</button>
@@ -331,7 +332,7 @@
             const historyData = localStorage.getItem('checkHistory');
             allHistory = historyData ? JSON.parse(historyData) : [];
             filteredHistory = [...allHistory];
-            
+
             updateStats();
             renderHistory();
         }
@@ -381,7 +382,7 @@
             const statusClass = item.status;
             const statusText = getStatusText(item.status);
             const statusBadgeClass = `status-${item.status}`;
-            
+
             const timestamp = new Date(item.timestamp).toLocaleString();
             const checkTypes = item.checks.join(', ');
 
@@ -410,10 +411,14 @@
 
         function getStatusText(status) {
             switch (status) {
-                case 'completed': return 'Завершено';
-                case 'error': return 'Ошибка';
-                case 'pending': return 'В процессе';
-                default: return 'Неизвестно';
+                case 'completed':
+                    return 'Завершено';
+                case 'error':
+                    return 'Ошибка';
+                case 'pending':
+                    return 'В процессе';
+                default:
+                    return 'Неизвестно';
             }
         }
 
@@ -438,4 +443,5 @@
         });
     </script>
 </body>
+
 </html>

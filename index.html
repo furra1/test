@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +11,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Arial', sans-serif;
             color: #fff;
@@ -18,62 +19,63 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-
+        
         .header {
             text-align: center;
             margin-bottom: 30px;
         }
-
+        
         .page-title {
             font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
-
+        
         .subtitle {
             font-size: 1.1rem;
             opacity: 0.9;
         }
-
+        
         .content-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 30px;
         }
-
-        .form-container, .stats-container {
+        
+        .form-container,
+        .stats-container {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 15px;
             padding: 25px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
+        
         .form-group {
             margin-bottom: 20px;
         }
-
+        
         .form-label {
             display: block;
             margin-bottom: 10px;
             font-weight: bold;
             font-size: 1.1rem;
         }
-
+        
         .checkboxes {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 10px;
         }
-
+        
         .checkbox-label {
             display: flex;
             align-items: center;
@@ -82,16 +84,16 @@
             border-radius: 8px;
             transition: background-color 0.3s;
         }
-
+        
         .checkbox-label:hover {
             background: rgba(255, 255, 255, 0.1);
         }
-
+        
         .checkbox-label input[type="checkbox"] {
             margin-right: 8px;
             transform: scale(1.2);
         }
-
+        
         .input-field {
             width: 100%;
             padding: 12px;
@@ -101,12 +103,12 @@
             color: #333;
             font-size: 1rem;
         }
-
+        
         .input-field:focus {
             outline: none;
             box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
         }
-
+        
         .check-button {
             width: 100%;
             padding: 15px;
@@ -121,25 +123,25 @@
             position: relative;
             overflow: hidden;
         }
-
+        
         .check-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-
+        
         .check-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
-
+        
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
         }
-
+        
         .stat-card {
             background: rgba(255, 255, 255, 0.1);
             padding: 15px;
@@ -147,19 +149,19 @@
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
+        
         .stat-number {
             font-size: 2rem;
             font-weight: bold;
             color: #4ecdc4;
         }
-
+        
         .stat-label {
             font-size: 0.9rem;
             opacity: 0.8;
             margin-top: 5px;
         }
-
+        
         .status-indicator {
             display: inline-block;
             width: 10px;
@@ -167,10 +169,15 @@
             border-radius: 50%;
             margin-right: 8px;
         }
-
-        .status-online { background: #4ecdc4; }
-        .status-offline { background: #ff6b6b; }
-
+        
+        .status-online {
+            background: #4ecdc4;
+        }
+        
+        .status-offline {
+            background: #ff6b6b;
+        }
+        
         .results-section {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -179,13 +186,13 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             margin-top: 20px;
         }
-
+        
         .results-title {
             font-size: 1.5rem;
             margin-bottom: 15px;
             color: #4ecdc4;
         }
-
+        
         .check-id {
             background: rgba(0, 0, 0, 0.3);
             padding: 10px;
@@ -193,7 +200,7 @@
             font-family: monospace;
             margin-bottom: 15px;
         }
-
+        
         .results-content {
             background: rgba(0, 0, 0, 0.3);
             padding: 15px;
@@ -203,7 +210,7 @@
             max-height: 400px;
             overflow-y: auto;
         }
-
+        
         .history-section {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -212,7 +219,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             margin-top: 20px;
         }
-
+        
         .history-item {
             background: rgba(0, 0, 0, 0.3);
             padding: 10px;
@@ -221,11 +228,11 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
+        
         .history-item:hover {
             background: rgba(0, 0, 0, 0.5);
         }
-
+        
         .error-message {
             background: rgba(255, 107, 107, 0.2);
             border: 1px solid #ff6b6b;
@@ -234,24 +241,24 @@
             border-radius: 8px;
             margin: 15px 0;
         }
-
+        
         .loading {
             text-align: center;
             padding: 20px;
             color: #4ecdc4;
         }
-
+        
         @media (max-width: 768px) {
             .content-grid {
                 grid-template-columns: 1fr;
             }
-            
             .page-title {
                 font-size: 2rem;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header class="header">
@@ -323,7 +330,7 @@
                         <div class="stat-label">Завершено</div>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Статус агентов</label>
                     <div id="agentsList" class="agents-list">
@@ -356,7 +363,7 @@
         // Функция для выполнения HTTP-запросов с обработкой ошибок
         async function request(endpoint, options = {}) {
             const url = `${API_BASE_URL}${endpoint}`;
-            
+
             try {
                 const response = await fetch(url, {
                     headers: {
@@ -420,7 +427,7 @@
             try {
                 const agentsData = await api.getAgents();
                 const agents = agentsData.agents || [];
-                
+
                 const totalAgents = agents.length;
                 const onlineAgents = agents.filter(agent => {
                     if (!agent.last_heartbeat) return false;
@@ -440,7 +447,7 @@
                     agentsListEl.innerHTML = '<div class="loading">Агенты не найдены</div>';
                 } else {
                     agentsListEl.innerHTML = agents.map(agent => {
-                        const isOnline = agent.last_heartbeat && 
+                        const isOnline = agent.last_heartbeat &&
                             (new Date() - new Date(agent.last_heartbeat)) / (1000 * 60) < 2;
                         return `
                             <div class="stat-card">
@@ -478,10 +485,13 @@
 
         function getStatusText(status) {
             switch (status) {
-                case 'completed': return 'Завершено';
-                case 'error': return 'Ошибка';
-                case 'pending': 
-                default: return 'В процессе';
+                case 'completed':
+                    return 'Завершено';
+                case 'error':
+                    return 'Ошибка';
+                case 'pending':
+                default:
+                    return 'В процессе';
             }
         }
 
@@ -506,12 +516,12 @@
                 status: 'pending',
                 timestamp: new Date().toISOString()
             };
-            
+
             checkHistory.unshift(historyItem);
             if (checkHistory.length > 50) {
                 checkHistory = checkHistory.slice(0, 50);
             }
-            
+
             localStorage.setItem('checkHistory', JSON.stringify(checkHistory));
             loadHistory();
         }
@@ -528,11 +538,11 @@
             const maxAttempts = 30;
             let attempts = 0;
 
-            const poll = async () => {
+            const poll = async() => {
                 try {
                     const result = await api.getCheckResult(checkId);
                     renderResults(result, container);
-                    
+
                     // Обновляем статус в истории
                     const historyItem = checkHistory.find(h => h.checkId === checkId);
                     if (historyItem) {
@@ -584,22 +594,22 @@
 
             if (result.status === 'completed') {
                 let html = `<strong>Цель:</strong> ${result.target}<br><br>`;
-                
+
                 if (result.results) {
                     Object.entries(result.results).forEach(([checkType, checkResult]) => {
                         html += `<div style="margin-bottom: 20px;">`;
                         html += `<strong>${checkType.toUpperCase()}:</strong><br>`;
-                        
+
                         if (checkResult.success) {
                             html += `<pre style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; margin-top: 5px;">${checkResult.output || 'Выполнено успешно'}</pre>`;
                         } else {
                             html += `<div class="error-message" style="margin-top: 5px;">Ошибка: ${checkResult.error || 'Неизвестная ошибка'}</div>`;
                         }
-                        
+
                         html += `</div>`;
                     });
                 }
-                
+
                 container.innerHTML = html;
             }
         }
@@ -626,9 +636,9 @@
         }
 
         // Обработчик отправки формы
-        checkForm.addEventListener('submit', async (event) => {
+        checkForm.addEventListener('submit', async(event) => {
             event.preventDefault();
-            
+
             const target = targetInput.value.trim();
             const checkboxes = document.querySelectorAll('input[name="checks"]:checked');
             const selectedChecks = Array.from(checkboxes).map(cb => cb.value);
@@ -646,7 +656,7 @@
                 };
 
                 const result = await api.createCheck(checkData);
-                
+
                 addToHistory(target, result.checkId, selectedChecks);
                 showResultsSection(result.checkId, checkIdSpan, resultsSection, resultsContainer);
                 pollCheckResults(result.checkId, resultsContainer);
@@ -663,10 +673,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadStats();
             loadHistory();
-            
+
             // Обновляем статистику каждые 30 секунд
             setInterval(loadStats, 30000);
         });
     </script>
 </body>
+
 </html>
