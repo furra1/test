@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СПХ - Сервис проверки хостов</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-container, .stats-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .checkbox-label:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .input-field:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+
+        .check-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .check-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .check-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online { background: #4ecdc4; }
+        .status-offline { background: #ff6b6b; }
+
+        .results-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #4ecdc4;
+        }
+
+        .check-id {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin-bottom: 15px;
+        }
+
+        .results-content {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+        }
+
+        .history-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .history-item:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .error-message {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #4ecdc4;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="page-title">СПХ - Сервис проверки хостов</h1>
+            <p class="subtitle">Распределенная система сетевых проверок</p>
+        </header>
+
+        <div class="content-grid">
+            <div class="form-container">
+                <form id="checkForm">
+                    <div class="form-group">
+                        <label class="form-label">Тип проверки</label>
+                        <div class="checkboxes">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="checks" value="ping">
+                                <span>Ping</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="checks" value="http">
+                                <span>HTTP</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="checks" value="https">
+                                <span>HTTPS</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="checks" value="tcp">
+                                <span>TCP Port</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="checks" value="dns">
+                                <span>DNS Lookup</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="checks" value="traceroute">
+                                <span>Traceroute</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Введите хост или IP</label>
+                        <input type="text" id="target" class="input-field" placeholder="например: google.com или 8.8.8.8" required>
+                    </div>
+
+                    <button type="submit" class="check-button" id="submitBtn">
+                        <span class="button-text">Проверить</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="stats-container">
+                <h3 class="form-label">Статистика системы</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalAgents">-</div>
+                        <div class="stat-label">Всего агентов</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="onlineAgents">-</div>
+                        <div class="stat-label">Онлайн агентов</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalChecks">-</div>
+                        <div class="stat-label">Всего проверок</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="completedChecks">-</div>
+                        <div class="stat-label">Завершено</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Статус агентов</label>
+                    <div id="agentsList" class="agents-list">
+                        <div class="loading">Загрузка агентов...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <h3 class="results-title">Результаты проверки</h3>
+            <div id="checkId" class="check-id"></div>
+            <div id="resultsContainer" class="results-content">
+                <div class="loading">Выполняется проверка...</div>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h3 class="results-title">История проверок</h3>
+            <div id="historyList" class="history-list">
+                <div class="loading">Загрузка истории...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000/api';
+        let checkHistory = JSON.parse(localStorage.getItem('checkHistory') || '[]');
+
+        // Функция для выполнения HTTP-запросов с обработкой ошибок
+        async function request(endpoint, options = {}) {
+            const url = `${API_BASE_URL}${endpoint}`;
+            
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers,
+                    },
+                    ...options,
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || `HTTP Error: ${response.status} ${response.statusText}`);
+                }
+
+                return response.json();
+            } catch (error) {
+                console.error('Request failed:', error);
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    throw new Error('Не удалось подключиться к серверу. Проверьте, запущен ли бэкенд на localhost:8000');
+                }
+                throw error;
+            }
+        }
+
+        // API методы
+        const api = {
+            async createCheck(checkData) {
+                return request('/check', {
+                    method: 'POST',
+                    body: JSON.stringify(checkData),
+                });
+            },
+
+            async getCheckResult(checkId) {
+                return request(`/check/${checkId}`);
+            },
+
+            async getAgents() {
+                return request('/agents');
+            }
+        };
+
+        // Получаем элементы DOM
+        const checkForm = document.getElementById('checkForm');
+        const targetInput = document.getElementById('target');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const checkIdSpan = document.getElementById('checkId');
+        const historyList = document.getElementById('historyList');
+
+        // Статистика
+        const totalAgentsEl = document.getElementById('totalAgents');
+        const onlineAgentsEl = document.getElementById('onlineAgents');
+        const totalChecksEl = document.getElementById('totalChecks');
+        const completedChecksEl = document.getElementById('completedChecks');
+        const agentsListEl = document.getElementById('agentsList');
+
+        // Загрузка статистики
+        async function loadStats() {
+            try {
+                const agentsData = await api.getAgents();
+                const agents = agentsData.agents || [];
+                
+                const totalAgents = agents.length;
+                const onlineAgents = agents.filter(agent => {
+                    if (!agent.last_heartbeat) return false;
+                    const lastHeartbeat = new Date(agent.last_heartbeat);
+                    const now = new Date();
+                    const diffMinutes = (now - lastHeartbeat) / (1000 * 60);
+                    return diffMinutes < 2; // Считаем онлайн если heartbeat был менее 2 минут назад
+                }).length;
+
+                totalAgentsEl.textContent = totalAgents;
+                onlineAgentsEl.textContent = onlineAgents;
+                totalChecksEl.textContent = checkHistory.length;
+                completedChecksEl.textContent = checkHistory.filter(h => h.status === 'completed').length;
+
+                // Отображаем список агентов
+                if (agents.length === 0) {
+                    agentsListEl.innerHTML = '<div class="loading">Агенты не найдены</div>';
+                } else {
+                    agentsListEl.innerHTML = agents.map(agent => {
+                        const isOnline = agent.last_heartbeat && 
+                            (new Date() - new Date(agent.last_heartbeat)) / (1000 * 60) < 2;
+                        return `
+                            <div class="stat-card">
+                                <span class="status-indicator ${isOnline ? 'status-online' : 'status-offline'}"></span>
+                                <strong>${agent.name}</strong><br>
+                                <small>${agent.location}</small><br>
+                                <small>IP: ${agent.ip}</small><br>
+                                <small>Последний heartbeat: ${agent.last_heartbeat ? new Date(agent.last_heartbeat).toLocaleString() : 'Никогда'}</small>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки статистики:', error);
+                agentsListEl.innerHTML = '<div class="error-message">Ошибка загрузки данных агентов</div>';
+            }
+        }
+
+        // Загрузка истории
+        function loadHistory() {
+            if (checkHistory.length === 0) {
+                historyList.innerHTML = '<div class="loading">История проверок пуста</div>';
+                return;
+            }
+
+            historyList.innerHTML = checkHistory.map(item => `
+                <div class="history-item" onclick="showCheckResult('${item.checkId}')">
+                    <strong>${item.target}</strong> - ${item.checks.join(', ')}<br>
+                    <small>ID: ${item.checkId}</small><br>
+                    <small>Статус: ${getStatusText(item.status)}</small><br>
+                    <small>Время: ${new Date(item.timestamp).toLocaleString()}</small>
+                </div>
+            `).join('');
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'completed': return 'Завершено';
+                case 'error': return 'Ошибка';
+                case 'pending': 
+                default: return 'В процессе';
+            }
+        }
+
+        // Показать результат проверки
+        async function showCheckResult(checkId) {
+            try {
+                const result = await api.getCheckResult(checkId);
+                showResultsSection(checkId, checkIdSpan, resultsSection, resultsContainer);
+                renderResults(result, resultsContainer);
+            } catch (error) {
+                console.error('Ошибка получения результата:', error);
+                resultsContainer.innerHTML = `<div class="error-message">Ошибка: ${error.message}</div>`;
+            }
+        }
+
+        // Добавить в историю
+        function addToHistory(target, checkId, checks) {
+            const historyItem = {
+                target,
+                checkId,
+                checks,
+                status: 'pending',
+                timestamp: new Date().toISOString()
+            };
+            
+            checkHistory.unshift(historyItem);
+            if (checkHistory.length > 50) {
+                checkHistory = checkHistory.slice(0, 50);
+            }
+            
+            localStorage.setItem('checkHistory', JSON.stringify(checkHistory));
+            loadHistory();
+        }
+
+        // Показать секцию результатов
+        function showResultsSection(checkId, checkIdSpan, resultsSection, resultsContainer) {
+            checkIdSpan.textContent = `ID проверки: ${checkId}`;
+            resultsSection.style.display = 'block';
+            resultsContainer.innerHTML = '<div class="loading">Загрузка результатов...</div>';
+        }
+
+        // Опрос результатов
+        async function pollCheckResults(checkId, container) {
+            const maxAttempts = 30;
+            let attempts = 0;
+
+            const poll = async () => {
+                try {
+                    const result = await api.getCheckResult(checkId);
+                    renderResults(result, container);
+                    
+                    // Обновляем статус в истории
+                    const historyItem = checkHistory.find(h => h.checkId === checkId);
+                    if (historyItem) {
+                        historyItem.status = result.status;
+                        localStorage.setItem('checkHistory', JSON.stringify(checkHistory));
+                        loadHistory();
+                    }
+
+                    if (result.status === 'completed' || result.status === 'error') {
+                        return;
+                    }
+
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        setTimeout(poll, 2000);
+                    } else {
+                        container.innerHTML = '<div class="error-message">Таймаут ожидания результатов</div>';
+                    }
+                } catch (error) {
+                    console.error('Ошибка опроса результатов:', error);
+                    container.innerHTML = `<div class="error-message">Ошибка: ${error.message}</div>`;
+                }
+            };
+
+            poll();
+        }
+
+        // Отображение результатов
+        function renderResults(result, container) {
+            if (!result) {
+                container.innerHTML = '<div class="error-message">Результаты не найдены</div>';
+                return;
+            }
+
+            if (result.status === 'queued') {
+                container.innerHTML = '<div class="loading">Задача поставлена в очередь...</div>';
+                return;
+            }
+
+            if (result.status === 'in_progress') {
+                container.innerHTML = '<div class="loading">Выполняется проверка...</div>';
+                return;
+            }
+
+            if (result.status === 'error') {
+                container.innerHTML = `<div class="error-message">Ошибка: ${result.error || 'Неизвестная ошибка'}</div>`;
+                return;
+            }
+
+            if (result.status === 'completed') {
+                let html = `<strong>Цель:</strong> ${result.target}<br><br>`;
+                
+                if (result.results) {
+                    Object.entries(result.results).forEach(([checkType, checkResult]) => {
+                        html += `<div style="margin-bottom: 20px;">`;
+                        html += `<strong>${checkType.toUpperCase()}:</strong><br>`;
+                        
+                        if (checkResult.success) {
+                            html += `<pre style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; margin-top: 5px;">${checkResult.output || 'Выполнено успешно'}</pre>`;
+                        } else {
+                            html += `<div class="error-message" style="margin-top: 5px;">Ошибка: ${checkResult.error || 'Неизвестная ошибка'}</div>`;
+                        }
+                        
+                        html += `</div>`;
+                    });
+                }
+                
+                container.innerHTML = html;
+            }
+        }
+
+        // Валидация формы
+        function validateForm(target, selectedChecks) {
+            if (!target.trim()) {
+                alert('Пожалуйста, введите цель для проверки');
+                return false;
+            }
+
+            if (selectedChecks.length === 0) {
+                alert('Пожалуйста, выберите хотя бы один тип проверки');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Установка состояния кнопки
+        function setButtonState(button, disabled, text) {
+            button.disabled = disabled;
+            button.querySelector('.button-text').textContent = text;
+        }
+
+        // Обработчик отправки формы
+        checkForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const target = targetInput.value.trim();
+            const checkboxes = document.querySelectorAll('input[name="checks"]:checked');
+            const selectedChecks = Array.from(checkboxes).map(cb => cb.value);
+
+            if (!validateForm(target, selectedChecks)) {
+                return;
+            }
+
+            setButtonState(submitBtn, true, 'Проверка...');
+
+            try {
+                const checkData = {
+                    target,
+                    checks: selectedChecks,
+                };
+
+                const result = await api.createCheck(checkData);
+                
+                addToHistory(target, result.checkId, selectedChecks);
+                showResultsSection(result.checkId, checkIdSpan, resultsSection, resultsContainer);
+                pollCheckResults(result.checkId, resultsContainer);
+
+            } catch (error) {
+                console.error('Ошибка при создании проверки:', error);
+                alert(`Ошибка: ${error.message}\n\nУбедитесь, что:\n1. Бэкенд запущен на localhost:8000\n2. CORS настроен правильно`);
+            } finally {
+                setButtonState(submitBtn, false, 'Проверить');
+            }
+        });
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadHistory();
+            
+            // Обновляем статистику каждые 30 секунд
+            setInterval(loadStats, 30000);
+        });
+    </script>
+</body>
+</html>
