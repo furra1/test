@@ -47,14 +47,6 @@ class NetworkAgent:
                 check_all_records,
                 execute_traceroute
             )
-        except ImportError:
-            # Fallback к старым модулям если ip_checks.py не найден
-            try:
-                from PING import advanced_ping_check
-                from HTTP import http_ping_check
-                from TCP_connect import simple_tcp_ping
-                from DNS import check_all_records
-                from traceroute import execute_traceroute
             
             self.check_functions = {
                 'ping': advanced_ping_check,
@@ -64,9 +56,26 @@ class NetworkAgent:
                 'dns': check_all_records,
                 'traceroute': execute_traceroute
             }
-        except ImportError as e:
-            logger.error(f"Ошибка импорта модулей проверок: {e}")
-            self.check_functions = {}
+        except ImportError:
+            # Fallback к старым модулям если ip_checks.py не найден
+            try:
+                from PING import advanced_ping_check
+                from HTTP import http_ping_check
+                from TCP_connect import simple_tcp_ping
+                from DNS import check_all_records
+                from traceroute import execute_traceroute
+                
+                self.check_functions = {
+                    'ping': advanced_ping_check,
+                    'http': http_ping_check,
+                    'https': http_ping_check,
+                    'tcp': simple_tcp_ping,
+                    'dns': check_all_records,
+                    'traceroute': execute_traceroute
+                }
+            except ImportError as e:
+                logger.error(f"Ошибка импорта модулей проверок: {e}")
+                self.check_functions = {}
     
     def _get_location(self) -> str:
         """Получить локацию агента"""
