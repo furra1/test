@@ -1,14 +1,10 @@
 from app.services.checks_service import CheckService
 
-# Глобальный экземпляр сервиса (singleton)
-_check_service = None
-
-def get_check_service() -> CheckService:
-    """Получить или создать экземпляр CheckService"""
-    global _check_service
-    if _check_service is None:
-        _check_service = CheckService()
-    return _check_service
+def get_check_service(app) -> CheckService:
+    """Получить или создать экземпляр CheckService из контекста app"""
+    if 'check_service' not in app:
+        app['check_service'] = CheckService()
+    return app['check_service']
 
 async def create_check(data, app):
     """Создать новую проверку"""
@@ -23,7 +19,7 @@ async def create_check(data, app):
         raise ValueError("Не указаны типы проверок")
     
     # Создаем проверку через сервис
-    service = get_check_service()
+    service = get_check_service(app)
     check_id = await service.create_check(target, checks)
     
     return {
@@ -35,7 +31,7 @@ async def create_check(data, app):
 
 async def get_check_result(check_id: str, app):
     """Получить результат проверки по ID"""
-    service = get_check_service()
+    service = get_check_service(app)
     result = service.get_check_by_id(check_id)
     
     if not result:
