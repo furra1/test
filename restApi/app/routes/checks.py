@@ -36,7 +36,6 @@ async def get_check_handler(request):
     
     return web.json_response(result)
 
-@checks_routes.options('/api/check')
 @checks_routes.options('/api/history')
 async def options_history_handler(request):
     """Обработка preflight запросов для CORS"""
