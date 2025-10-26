@@ -15,8 +15,11 @@ build/
 venv/
 env/
 *.db
+agents.db
 .DS_Store
 README.md
 .vscode
 .idea
+hakaton_preKolisty
+deploy/
 

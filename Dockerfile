@@ -20,5 +20,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8000
 
 # Команда запуска (переопределяется в docker-compose)
-CMD ["python", "restApi/main.py"]
+CMD ["python3", "restApi/main.py"]
 

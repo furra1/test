@@ -495,40 +495,7 @@
         </main>
     </div>
 
-    <script type="module">
-        // Импорт модулей const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8000/api'; // Функция для выполнения HTTP-запросов с обработкой ошибок async function request(endpoint, options = {}) { const url = `${API_BASE_URL}${endpoint}`; try { const
-        response = await fetch(url, { headers: { 'Content-Type': 'application/json', ...options.headers, }, ...options, }); if (!response.ok) { throw new Error(`HTTP Error: ${response.status} ${response.statusText}`); } return response.json(); } catch
-        (error) { console.error('Request failed:', error); throw new Error(`Не удалось подключиться к серверу: ${error.message}`); } } // API методы const api = { // Создать новую проверку async createCheck(checkData) { return request('/check', { method:
-        'POST', body: JSON.stringify(checkData), }); }, // Получить результат проверки по ID async getCheckResult(checkId) { return request(`/check/${checkId}`); }, // Получить список агентов (для будущей страницы статуса) async getAgents() { return request('/agents');
-        }, }; // Получаем элементы DOM const checkForm = document.getElementById('checkForm'); const targetInput = document.getElementById('target'); const submitBtn = document.getElementById('submitBtn'); const resultsSection = document.getElementById('resultsSection');
-        const resultsContainer = document.getElementById('resultsContainer'); const checkIdSpan = document.getElementById('checkId'); // Хранилище для истории проверок let checkHistory = JSON.parse(localStorage.getItem('checkHistory')) || []; // Обработчик
-        отправки формы checkForm.addEventListener('submit', async (event) => { event.preventDefault(); // Получаем данные из формы const target = targetInput.value.trim(); const checkboxes = document.querySelectorAll('input[name="checks"]:checked'); const
-        selectedChecks = Array.from(checkboxes).map(cb => cb.value); if (!target || selectedChecks.length === 0) { alert('Пожалуйста, заполните хост и выберите хотя бы один тип проверки.'); return; } // Блокируем кнопку на время отправки submitBtn.disabled
-        = true; submitBtn.querySelector('.button-text').textContent = 'проверка...'; try { console.log('Отправка запроса на бэкенд...'); // Отправляем запрос на бэкенд const checkData = { target, checks: selectedChecks, }; const result = await api.createCheck(checkData);
-        console.log('Ответ от бэкенда:', result); // Сохраняем в историю checkHistory.unshift({ target, checkId: result.checkId }); if (checkHistory.length > 10) checkHistory = checkHistory.slice(0, 10); localStorage.setItem('checkHistory', JSON.stringify(checkHistory));
-        // Показываем секцию с результатами showResultsSection(result.checkId); // Начинаем опрашивать бэкенд для получения результатов pollCheckResults(result.checkId); } catch (error) { console.error('Ошибка при создании проверки:', error); alert(`Ошибка:
-        ${error.message}\n\nУбедитесь, что:\n1. Бэкенд запущен на localhost:8000\n2. CORS настроен правильно`); } finally { // Разблокируем кнопку submitBtn.disabled = false; submitBtn.querySelector('.button-text').textContent = 'проверить'; } }); //
-        Показать секцию с результатами и установить ID проверки function showResultsSection(checkId) { checkIdSpan.textContent = `ID проверки: ${checkId}`; resultsSection.style.display = 'block'; resultsContainer.innerHTML = '
-        <p>Проверка запущена, ожидаем результаты...</p>'; // Прокручиваем страницу к результатам resultsSection.scrollIntoView({ behavior: 'smooth' }); } // Функция для опроса результатов проверки async function pollCheckResults(checkId) { const maxAttempts
-        = 30; const interval = 2000; for (let attempt = 0; attempt
-        < maxAttempts; attempt++) { try { console.log(`Опрос результатов, попытка ${attempt + 1}`); const result=a wait api.getCheckResult(checkId); renderResults(result); // Если все проверки
-            завершены, прекращаем опрос if (isCheckComplete(result)) { console.log( 'Проверка завершена'); break; } // Ждём перед следующим запросом await new Promise(resolve=> setTimeout(resolve, interval)); } catch (error) { console.error('Ошибка при получении результатов:', error); resultsContainer.innerHTML = `
-            <p class="status-error">Ошибка: ${error.message}</p>`; break; } } } // Проверяем, все ли проверки завершены function isCheckComplete(result) { if (!result.results) return false; return result.results.every(agentResult => agentResult.status === 'completed' || agentResult.status
-            === 'error' ); } // Рендерим результаты на странице function renderResults(data) { if (!data.results || data.results.length === 0) { resultsContainer.innerHTML = '
-            <p>Результаты пока не доступны...</p>'; return; } let html = ''; data.results.forEach(agentResult => { const statusClass = getStatusClass(agentResult.status); const statusText = getStatusText(agentResult.status); html += `
-            <div class="agent-result">
-                <h4>Агент: ${agentResult.agent_id || 'Unknown'}
-                    <span class="status-badge ${statusClass}">${statusText}</span>
-                </h4>
-                ${agentResult.log ? `
-                <div class="log-entry">${escapeHtml(agentResult.log)}</div>` : ''}
-            </div>
-            `; }); resultsContainer.innerHTML = html; } // Вспомогательные функции function getStatusClass(status) { switch (status) { case 'completed': return 'status-success'; case 'error': return 'status-error'; case 'pending': default: return 'status-pending';
-            } } function getStatusText(status) { switch (status) { case 'completed': return 'Завершено'; case 'error': return 'Ошибка'; case 'pending': default: return 'В процессе'; } } function escapeHtml(unsafe) { return unsafe .replace(/&/g, "&amp;")
-            .replace(/
-            </g, "&lt;") .replace(/>/g, "&gt;") .replace(/"/g, "&quot;") .replace(/'/g, "&#039;"); } // Инициализация при загрузке document.addEventListener('DOMContentLoaded', function() { // Анимация кнопки const checkButton = document.querySelector('.check-button'); checkButton.addEventListener('mouseenter',
-            function() { if (!this.disabled) { this.style.transform = 'translateY(-2px)'; } }); checkButton.addEventListener('mouseleave', function() { if (!this.disabled) { this.style.transform = 'translateY(0)'; } }); });
-    </script>
+    <script type="module" src="js/app.js"></script>
 </body>
 
 </html>
