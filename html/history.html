@@ -374,86 +374,46 @@
         </main>
     </div>
 
-    <script>
-        // Данные истории (в реальном приложении будут загружаться с сервера)
-        const historyData = [
-            {
-                id: 'chk_001',
-                target: 'google.com',
-                date: '2023-11-15 14:30',
-                status: 'success',
-                checks: ['ping', 'http', 'https']
-            },
-            {
-                id: 'chk_002',
-                target: '8.8.8.8',
-                date: '2023-11-15 13:45',
-                status: 'success',
-                checks: ['ping', 'dns']
-            },
-            {
-                id: 'chk_003',
-                target: 'example.com',
-                date: '2023-11-15 12:20',
-                status: 'error',
-                checks: ['http', 'https']
-            },
-            {
-                id: 'chk_004',
-                target: '192.168.1.1:8080',
-                date: '2023-11-15 11:15',
-                status: 'pending',
-                checks: ['tcp']
-            },
-            {
-                id: 'chk_005',
-                target: 'github.com',
-                date: '2023-11-14 16:40',
-                status: 'success',
-                checks: ['ping', 'http', 'https', 'traceroute']
-            },
-            {
-                id: 'chk_006',
-                target: 'localhost:3000',
-                date: '2023-11-14 15:20',
-                status: 'error',
-                checks: ['http']
-            },
-            {
-                id: 'chk_007',
-                target: '1.1.1.1',
-                date: '2023-11-14 14:10',
-                status: 'success',
-                checks: ['ping', 'dns']
-            }
-        ];
-
-        // Загрузка истории из localStorage (если есть)
-        function loadHistoryFromStorage() {
-            const storedHistory = localStorage.getItem('checkHistory');
-            if (storedHistory) {
-                try {
-                    return JSON.parse(storedHistory);
-                } catch (e) {
-                    console.error('Ошибка загрузки истории из localStorage:', e);
+    <script type="module">
+        // API
+        const API_BASE_URL = 'http://localhost:8000/api';
+        
+        // Функция для выполнения HTTP-запросов
+        async function request(endpoint, options = {}) {
+            const url = `${API_BASE_URL}${endpoint}`;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers,
+                    },
+                    ...options,
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
                 }
+                return response.json();
+            } catch (error) {
+                console.error('Request failed:', error);
+                throw error;
             }
-            return [];
+        }
+        
+        // Загрузка истории с сервера
+        async function loadHistory() {
+            try {
+                const data = await request('/history');
+                return data.history || [];
+            } catch (error) {
+                console.error('Ошибка загрузки истории:', error);
+                // Fallback к демо-данным
+                return [];
+            }
         }
 
         // Отображение истории
-        function renderHistory(filter = 'all') {
+        function renderHistory(historyData, filter = 'all') {
             const historyList = document.getElementById('historyList');
-            const storedHistory = loadHistoryFromStorage();
-            
-            // Объединяем данные из localStorage с демо-данными
-            const allHistory = [...historyData, ...storedHistory.map(item => ({
-                id: item.checkId,
-                target: item.target,
-                date: new Date().toLocaleString('ru-RU'),
-                status: 'success', // предполагаем успешный статус для сохраненных проверок
-                checks: ['ping'] // предполагаем базовую проверку
-            }))];
 
             // Фильтрация
             const filteredHistory = filter === 'all' 
@@ -535,9 +495,15 @@
         }
 
         // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Загружаем историю с сервера
+            const historyData = await loadHistory();
+            
+            // Сохраняем в глобальную переменную для фильтрации
+            window.currentHistory = historyData;
+            
             // Отображаем историю
-            renderHistory();
+            renderHistory(historyData);
 
             // Добавляем обработчики для фильтров
             document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -552,7 +518,7 @@
                     
                     // Применяем фильтр
                     const filter = this.getAttribute('data-filter');
-                    renderHistory(filter);
+                    renderHistory(window.currentHistory, filter);
                 });
             });
         });

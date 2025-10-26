@@ -154,6 +154,8 @@ class CheckService:
     
     async def create_check(self, target: str, checks: List[str]) -> str:
         """Создает новую проверку и возвращает ID"""
+        import datetime
+        
         check_id = str(uuid.uuid4())
         
         self.checks_storage[check_id] = {
@@ -162,7 +164,7 @@ class CheckService:
             "checks": checks,
             "status": "queued",
             "results": {},
-            "created_at": None
+            "created_at": datetime.datetime.now()
         }
         
         asyncio.create_task(self._execute_checks(check_id, target, checks))

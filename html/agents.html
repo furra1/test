@@ -440,80 +440,54 @@
         </main>
     </div>
 
-    <script>
-        // Данные агентов (в реальном приложении будут загружаться с сервера)
-        const agentsData = [
-            {
-                id: 'agent_001',
-                name: 'Московский узел',
-                status: 'online',
-                location: 'Москва, RU',
-                load: 35,
-                uptime: '15д 4ч 32м',
-                lastCheck: '2 минуты назад',
-                version: '1.2.3'
-            },
-            {
-                id: 'agent_002',
-                name: 'СПб узел',
-                status: 'online',
-                location: 'Санкт-Петербург, RU',
-                load: 72,
-                uptime: '8д 12ч 15м',
-                lastCheck: '5 минут назад',
-                version: '1.2.3'
-            },
-            {
-                id: 'agent_003',
-                name: 'Новосибирский узел',
-                status: 'warning',
-                location: 'Новосибирск, RU',
-                load: 89,
-                uptime: '3д 7ч 48м',
-                lastCheck: '12 минут назад',
-                version: '1.2.2'
-            },
-            {
-                id: 'agent_004',
-                name: 'Екатеринбургский узел',
-                status: 'online',
-                location: 'Екатеринбург, RU',
-                load: 24,
-                uptime: '21д 6ч 11м',
-                lastCheck: '1 минуту назад',
-                version: '1.2.3'
-            },
-            {
-                id: 'agent_005',
-                name: 'Казанский узел',
-                status: 'offline',
-                location: 'Казань, RU',
-                load: 0,
-                uptime: '0',
-                lastCheck: '45 минут назад',
-                version: '1.2.1'
-            },
-            {
-                id: 'agent_006',
-                name: 'Краснодарский узел',
-                status: 'online',
-                location: 'Краснодар, RU',
-                load: 56,
-                uptime: '12д 18ч 22м',
-                lastCheck: '3 минуты назад',
-                version: '1.2.3'
-            },
-            {
-                id: 'agent_007',
-                name: 'Владивостокский узел',
-                status: 'online',
-                location: 'Владивосток, RU',
-                load: 41,
-                uptime: '6д 9ч 5м',
-                lastCheck: '7 минут назад',
-                version: '1.2.3'
+    <script type="module">
+        // API
+        const API_BASE_URL = 'http://localhost:8000/api';
+        
+        // Функция для выполнения HTTP-запросов
+        async function request(endpoint, options = {}) {
+            const url = `${API_BASE_URL}${endpoint}`;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers,
+                    },
+                    ...options,
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+                return response.json();
+            } catch (error) {
+                console.error('Request failed:', error);
+                throw error;
             }
-        ];
+        }
+        
+        // Загрузка агентов с сервера
+        async function loadAgents() {
+            try {
+                const data = await request('/agents');
+                // Преобразуем данные агентов из API в формат для фронтенда
+                return data.agents.map(agent => ({
+                    id: agent.id || agent.name,
+                    name: agent.name || agent.id,
+                    status: agent.online ? 'online' : 'offline',
+                    location: agent.location || 'Unknown',
+                    load: agent.active_checks || 0,
+                    uptime: agent.last_heartbeat || 'N/A',
+                    lastCheck: agent.last_heartbeat || 'N/A',
+                    version: agent.version || '1.0.0'
+                }));
+            } catch (error) {
+                console.error('Ошибка загрузки агентов:', error);
+                return [];
+            }
+        }
+        
+        // Данные агентов (загружаются с сервера)
+        let agentsData = [];
 
         // Обновление статистики
         function updateStats() {
@@ -604,41 +578,27 @@
             }
         }
 
-        // Имитация обновления данных в реальном времени
-        function simulateRealTimeUpdates() {
-            // Случайным образом изменяем нагрузку агентов
-            agentsData.forEach(agent => {
-                if (agent.status !== 'offline') {
-                    // Изменяем нагрузку на ±5%
-                    const change = Math.floor(Math.random() * 11) - 5; // от -5 до +5
-                    agent.load = Math.max(0, Math.min(100, agent.load + change));
-                    
-                    // Иногда меняем статус
-                    if (Math.random() < 0.02) { // 2% шанс
-                        if (agent.status === 'online') {
-                            agent.status = 'warning';
-                        } else if (agent.status === 'warning') {
-                            agent.status = Math.random() < 0.5 ? 'online' : 'offline';
-                        }
-                    }
-                }
-            });
-            
-            updateStats();
-            renderAgents(getCurrentFilter());
-            
-            // Планируем следующее обновление
-            setTimeout(simulateRealTimeUpdates, 5000);
-        }
-
         // Получение текущего фильтра
         function getCurrentFilter() {
             const activeFilter = document.querySelector('.filter-btn.active');
             return activeFilter ? activeFilter.getAttribute('data-filter') : 'all';
         }
 
+        // Функция для обновления агентов
+        async function refreshAgents() {
+            const loadedAgents = await loadAgents();
+            if (loadedAgents.length > 0) {
+                agentsData = loadedAgents;
+            }
+            updateStats();
+            renderAgents(getCurrentFilter());
+        }
+        
         // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Загружаем агентов с сервера
+            agentsData = await loadAgents();
+            
             // Обновляем статистику и отображаем агентов
             updateStats();
             renderAgents();
@@ -660,8 +620,8 @@
                 });
             });
 
-            // Запускаем имитацию обновления в реальном времени
-            simulateRealTimeUpdates();
+            // Обновляем агентов каждые 5 секунд
+            setInterval(refreshAgents, 5000);
         });
     </script>
 </body>
