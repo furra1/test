@@ -414,11 +414,11 @@
         // Отображение истории
         function renderHistory(historyData, filter = 'all') {
             const historyList = document.getElementById('historyList');
-
+            
             // Фильтрация
             const filteredHistory = filter === 'all' 
-                ? allHistory 
-                : allHistory.filter(item => item.status === filter);
+                ? historyData 
+                : historyData.filter(item => item.status === filter);
 
             if (filteredHistory.length === 0) {
                 historyList.innerHTML = '<div class="empty-history">История проверок пуста</div>';
