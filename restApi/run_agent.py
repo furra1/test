@@ -18,8 +18,9 @@ async def main():
     print("=" * 50)
     
     # Создаем агента
+    server_url = os.environ.get('SERVER_URL', 'http://localhost:8000')
     agent = NetworkAgent(
-        server_url="http://localhost:8000",
+        server_url=server_url,
         agent_name="Test Agent"
     )
     

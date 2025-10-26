@@ -1,9 +1,9 @@
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8000/api';
 
 // Функция для выполнения HTTP-запросов с обработкой ошибок
 async function request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
-    
+
     try {
         const response = await fetch(url, {
             headers: {
