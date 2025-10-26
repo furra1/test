@@ -13,7 +13,7 @@ if __name__ == '__main__':
     logger.info("Сервер будет доступен на http://localhost:8000")
     
     import aiohttp.web
-    port = int(os.environ.get('PORT', '8080'))
+    port = int(os.environ.get('PORT', '8000'))
     aiohttp.web.run_app(
         app,
         host='0.0.0.0',
