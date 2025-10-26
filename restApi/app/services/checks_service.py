@@ -8,36 +8,46 @@ import uuid
 # Добавляем путь к папке checks
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'checks'))
 
-# Импортируем функции проверок
+# Импортируем функции проверок из ip_checks.py
 try:
-    from PING import advanced_ping_check
+    from ip_checks import (
+        advanced_ping_check,
+        http_ping_check,
+        simple_tcp_ping,
+        check_all_records,
+        execute_traceroute
+    )
 except ImportError:
-    def advanced_ping_check(target, count=5):
-        return {"error": "Ping check not available"}
+    # Fallback к старым модулям если ip_checks.py не найден
+    try:
+        from PING import advanced_ping_check
+    except ImportError:
+        def advanced_ping_check(target, count=5):
+            return {"error": "Ping check not available"}
     
-try:
-    from HTTP import http_ping_check
-except ImportError:
-    def http_ping_check(target, count=5):
-        return {"error": "HTTP check not available"}
+    try:
+        from HTTP import http_ping_check
+    except ImportError:
+        def http_ping_check(target, count=5):
+            return {"error": "HTTP check not available"}
 
-try:
-    from TCP_connect import simple_tcp_ping
-except ImportError:
-    def simple_tcp_ping(target, count=5, port=None):
-        return {"error": "TCP check not available"}
+    try:
+        from TCP_connect import simple_tcp_ping
+    except ImportError:
+        def simple_tcp_ping(target, count=5, port=None):
+            return {"error": "TCP check not available"}
 
-try:
-    from DNS import check_all_records
-except ImportError:
-    def check_all_records(target, dns_server=None):
-        return {"error": "DNS check not available"}
+    try:
+        from DNS import check_all_records
+    except ImportError:
+        def check_all_records(target, dns_server=None):
+            return {"error": "DNS check not available"}
 
-try:
-    from traceroute import execute_traceroute
-except ImportError:
-    def execute_traceroute(target, max_hops=30):
-        return {"error": "Traceroute not available"}
+    try:
+        from traceroute import execute_traceroute
+    except ImportError:
+        def execute_traceroute(target, max_hops=30):
+            return {"error": "Traceroute not available"}
 
 class CheckService:
     """Сервис для выполнения различных сетевых проверок"""

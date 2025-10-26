@@ -34,15 +34,27 @@ class NetworkAgent:
         self.running = False
         
         # Добавляем путь к модулям проверок
-        sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app', 'checks'))
+        checks_path = os.path.join(os.path.dirname(__file__), 'app', 'checks')
+        sys.path.insert(0, checks_path)
         
         # Импортируем функции проверок
         try:
-            from PING import advanced_ping_check
-            from HTTP import http_ping_check
-            from TCP_connect import simple_tcp_ping
-            from DNS import check_all_records
-            from traceroute import execute_traceroute
+            # Сначала пробуем импортировать из ip_checks.py
+            from ip_checks import (
+                advanced_ping_check,
+                http_ping_check,
+                simple_tcp_ping,
+                check_all_records,
+                execute_traceroute
+            )
+        except ImportError:
+            # Fallback к старым модулям если ip_checks.py не найден
+            try:
+                from PING import advanced_ping_check
+                from HTTP import http_ping_check
+                from TCP_connect import simple_tcp_ping
+                from DNS import check_all_records
+                from traceroute import execute_traceroute
             
             self.check_functions = {
                 'ping': advanced_ping_check,
